@@ -4,15 +4,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Extract project
-        run: unzip "projketg2.zip" -d . && mv "projketg2"/* . && mv "projketg2"/.* . || true
+      - uses: actions/checkout@v4
+      - name: Extract zip file
+        run: |
+          unzip -q "*.zip" -d . || true
+          if [ -d "projketg2" ]; then
+            mv projketg2/* . || true
+            mv projketg2/.* . || true
+          fi
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
       - run: flutter pub get
       - run: flutter build apk --debug
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
